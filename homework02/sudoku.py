@@ -73,7 +73,10 @@ def get_col(grid: tp.List[tp.List[str]], pos: tp.Tuple[int, int]) -> tp.List[str
     >>> get_col([['1', '2', '3'], ['4', '5', '6'], ['.', '8', '9']], (0, 2))
     ['3', '6', '9']
     """
-    pass
+    column = []
+    for i in range(len(grid)):
+        column.append(grid[i][pos[1]])
+    return column
 
 
 def get_block(grid: tp.List[tp.List[str]], pos: tp.Tuple[int, int]) -> tp.List[str]:
@@ -87,7 +90,25 @@ def get_block(grid: tp.List[tp.List[str]], pos: tp.Tuple[int, int]) -> tp.List[s
     >>> get_block(grid, (8, 8))
     ['2', '8', '.', '.', '.', '5', '.', '7', '9']
     """
-    pass
+    if pos[0] < 3 and pos[1] < 3:
+        block=[grid[i][j] for i in range(3) for j in range(3)]
+    if pos[0] < 3 and 2 < pos[1] < 6:
+        block=[grid[i][j] for i in range(3) for j in range(3, 6)]
+    if pos[0] < 3 and pos[1] > 5:
+        block=[grid[i][j] for i in range(3) for j in range(6, 9)]
+    if 2 < pos[0] < 6 and pos[1] < 3:
+        block=[grid[i][j] for i in range(3, 6) for j in range(3)]
+    if 2 < pos[0] < 6 and 2 < pos[1] < 6:
+        block=[grid[i][j] for i in range(3, 6) for j in range(3, 6)]
+    if 2 < pos[0] < 6 and pos[1] > 5:
+        block=[grid[i][j] for i in range(3, 6) for j in range(6, 9)]
+    if pos[0] > 5 and pos[1] < 3:
+        block=[grid[i][j] for i in range(6,9) for j in range(3)]
+    if pos[0] > 5 and 2 < pos[1] < 6:
+        block=[grid[i][j] for i in range(6,9) for j in range(3, 6)]
+    if pos[0] > 5 and pos[1] > 5:
+        block=[grid[i][j] for i in range(6,9) for j in range(6, 9)]
+    return block
 
 
 def find_empty_positions(grid: tp.List[tp.List[str]]) -> tp.Optional[tp.Tuple[int, int]]:
@@ -100,7 +121,13 @@ def find_empty_positions(grid: tp.List[tp.List[str]]) -> tp.Optional[tp.Tuple[in
     >>> find_empty_positions([['1', '2', '3'], ['4', '5', '6'], ['.', '8', '9']])
     (2, 0)
     """
-    pass
+    answer = [-1, -1]
+    for i in range(len(grid)):
+        for j in range(len(grid)):
+            if answer[0] == -1 and answer[1] == -1 and grid[i][j] == '.':
+                answer[0] = i
+                answer[1] = j
+    return tuple(answer)
 
 
 def find_possible_values(grid: tp.List[tp.List[str]], pos: tp.Tuple[int, int]) -> tp.Set[str]:
