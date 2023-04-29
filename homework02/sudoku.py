@@ -42,7 +42,7 @@ def group(values: tp.List[T], n: int) -> tp.List[tp.List[T]]:
     >>> group([1,2,3,4,5,6,7,8,9], 3)
     [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
     """
-    answer=[]
+    answer = []
     for i in range(n):
         answer.append(values[i * n: (i + 1) * n])
     return answer
@@ -60,7 +60,6 @@ def get_row(grid: tp.List[tp.List[str]], pos: tp.Tuple[int, int]) -> tp.List[str
     """
     row = grid[pos[0]].copy()
     return row
-
 
 
 def get_col(grid: tp.List[tp.List[str]], pos: tp.Tuple[int, int]) -> tp.List[str]:
@@ -91,23 +90,23 @@ def get_block(grid: tp.List[tp.List[str]], pos: tp.Tuple[int, int]) -> tp.List[s
     ['2', '8', '.', '.', '.', '5', '.', '7', '9']
     """
     if pos[0] < 3 and pos[1] < 3:
-        block=[grid[i][j] for i in range(3) for j in range(3)]
+        block = [grid[i][j] for i in range(3) for j in range(3)]
     if pos[0] < 3 and 2 < pos[1] < 6:
-        block=[grid[i][j] for i in range(3) for j in range(3, 6)]
+        block = [grid[i][j] for i in range(3) for j in range(3, 6)]
     if pos[0] < 3 and pos[1] > 5:
-        block=[grid[i][j] for i in range(3) for j in range(6, 9)]
+        block = [grid[i][j] for i in range(3) for j in range(6, 9)]
     if 2 < pos[0] < 6 and pos[1] < 3:
-        block=[grid[i][j] for i in range(3, 6) for j in range(3)]
+        block = [grid[i][j] for i in range(3, 6) for j in range(3)]
     if 2 < pos[0] < 6 and 2 < pos[1] < 6:
-        block=[grid[i][j] for i in range(3, 6) for j in range(3, 6)]
+        block = [grid[i][j] for i in range(3, 6) for j in range(3, 6)]
     if 2 < pos[0] < 6 and pos[1] > 5:
-        block=[grid[i][j] for i in range(3, 6) for j in range(6, 9)]
+        block = [grid[i][j] for i in range(3, 6) for j in range(6, 9)]
     if pos[0] > 5 and pos[1] < 3:
-        block=[grid[i][j] for i in range(6,9) for j in range(3)]
+        block = [grid[i][j] for i in range(6, 9) for j in range(3)]
     if pos[0] > 5 and 2 < pos[1] < 6:
-        block=[grid[i][j] for i in range(6,9) for j in range(3, 6)]
+        block = [grid[i][j] for i in range(6, 9) for j in range(3, 6)]
     if pos[0] > 5 and pos[1] > 5:
-        block=[grid[i][j] for i in range(6,9) for j in range(6, 9)]
+        block = [grid[i][j] for i in range(6, 9) for j in range(6, 9)]
     return block
 
 
@@ -141,7 +140,20 @@ def find_possible_values(grid: tp.List[tp.List[str]], pos: tp.Tuple[int, int]) -
     >>> values == {'2', '5', '9'}
     True
     """
-    pass
+    values = set()
+    forbidden_values = set()
+    block = get_block(grid, pos)
+    column = get_col(grid, pos)
+    row = get_row(grid, pos)
+    for i in range(len(block)):
+        forbidden_values.add(block[i])
+        forbidden_values.add(column[i])
+        forbidden_values.add(row[i])
+    forbidden_values.discard('.')
+    for i in range(1, 10):
+        if str(i) not in forbidden_values:
+            values.add(str(i))
+    return values
 
 
 def solve(grid: tp.List[tp.List[str]]) -> tp.Optional[tp.List[tp.List[str]]]:
@@ -157,7 +169,12 @@ def solve(grid: tp.List[tp.List[str]]) -> tp.Optional[tp.List[tp.List[str]]]:
     >>> solve(grid)
     [['5', '3', '4', '6', '7', '8', '9', '1', '2'], ['6', '7', '2', '1', '9', '5', '3', '4', '8'], ['1', '9', '8', '3', '4', '2', '5', '6', '7'], ['8', '5', '9', '7', '6', '1', '4', '2', '3'], ['4', '2', '6', '8', '5', '3', '7', '9', '1'], ['7', '1', '3', '9', '2', '4', '8', '5', '6'], ['9', '6', '1', '5', '3', '7', '2', '8', '4'], ['2', '8', '7', '4', '1', '9', '6', '3', '5'], ['3', '4', '5', '2', '8', '6', '1', '7', '9']]
     """
-    pass
+    solved_grid = [[]]
+    empty_position = find_empty_positions(grid)
+    if empty_position == [-1, -1]:
+        return solved_grid
+    else:
+        return solve(solved_grid)
 
 
 def check_solution(solution: tp.List[tp.List[str]]) -> bool:
