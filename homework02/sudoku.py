@@ -1,6 +1,6 @@
 import pathlib
 import typing as tp
-
+import random
 T = tp.TypeVar("T")
 
 
@@ -89,7 +89,7 @@ def get_block(grid: tp.List[tp.List[str]], pos: tp.Tuple[int, int]) -> tp.List[s
     >>> get_block(grid, (8, 8))
     ['2', '8', '.', '.', '.', '5', '.', '7', '9']
     """
-    block=[]
+    block = []
     row = (pos[0] // 3)
     col = (pos[1] // 3)
     for i in range(3):
@@ -157,18 +157,25 @@ def solve(grid: tp.List[tp.List[str]]) -> tp.Optional[tp.List[tp.List[str]]]:
     >>> solve(grid)
     [['5', '3', '4', '6', '7', '8', '9', '1', '2'], ['6', '7', '2', '1', '9', '5', '3', '4', '8'], ['1', '9', '8', '3', '4', '2', '5', '6', '7'], ['8', '5', '9', '7', '6', '1', '4', '2', '3'], ['4', '2', '6', '8', '5', '3', '7', '9', '1'], ['7', '1', '3', '9', '2', '4', '8', '5', '6'], ['9', '6', '1', '5', '3', '7', '2', '8', '4'], ['2', '8', '7', '4', '1', '9', '6', '3', '5'], ['3', '4', '5', '2', '8', '6', '1', '7', '9']]
     """
-    solved_grid = [[]]
     empty_position = find_empty_positions(grid)
-    if empty_position == [-1, -1]:
-        return solved_grid
-    else:
-        return solve(solved_grid)
+    if empty_position == (-1, -1):
+        return grid
+    for i in find_possible_values(grid, empty_position):
+        grid[empty_position[0]][empty_position[1]] = i
+        solution = solve(grid)
+        if solution: return solution  # работает как break для for
+    grid[empty_position[0]][empty_position[1]] = '.'
+    return None
 
 
 def check_solution(solution: tp.List[tp.List[str]]) -> bool:
     """ Если решение solution верно, то вернуть True, в противном случае False """
     # TODO: Add doctests with bad puzzles
-    pass
+    check = set('123456789')
+    for i in range(9):
+        if set(get_row(solution, (i, 0))) != check or set(get_col(solution, (0, i))) != check or set(get_block(solution, ((i // 3) * 2, (i % 3) * 3))) != check:
+            return False
+    return True
 
 
 def generate_sudoku(N: int) -> tp.List[tp.List[str]]:
@@ -193,7 +200,15 @@ def generate_sudoku(N: int) -> tp.List[tp.List[str]]:
     >>> check_solution(solution)
     True
     """
-    pass
+    new_sudoku = [['.' for j in range(9)] for i in range(9)]
+    while N > 0:
+        i = random.randint(0,8)
+        j = random.randint(0,8)
+        value = str(random.randint(1,9))
+        if new_sudoku[i][j] == '.' and value not in set(get_row(new_sudoku, (i, j))) and value not in set(get_col(new_sudoku, (i, j))) and value not in set(get_block(new_sudoku, (i, j))):
+            new_sudoku[i][j] = value
+            N -= 1
+    return new_sudoku
 
 
 if __name__ == "__main__":
