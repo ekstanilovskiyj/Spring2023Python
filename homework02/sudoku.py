@@ -89,24 +89,12 @@ def get_block(grid: tp.List[tp.List[str]], pos: tp.Tuple[int, int]) -> tp.List[s
     >>> get_block(grid, (8, 8))
     ['2', '8', '.', '.', '.', '5', '.', '7', '9']
     """
-    if pos[0] < 3 and pos[1] < 3:
-        block = [grid[i][j] for i in range(3) for j in range(3)]
-    if pos[0] < 3 and 2 < pos[1] < 6:
-        block = [grid[i][j] for i in range(3) for j in range(3, 6)]
-    if pos[0] < 3 and pos[1] > 5:
-        block = [grid[i][j] for i in range(3) for j in range(6, 9)]
-    if 2 < pos[0] < 6 and pos[1] < 3:
-        block = [grid[i][j] for i in range(3, 6) for j in range(3)]
-    if 2 < pos[0] < 6 and 2 < pos[1] < 6:
-        block = [grid[i][j] for i in range(3, 6) for j in range(3, 6)]
-    if 2 < pos[0] < 6 and pos[1] > 5:
-        block = [grid[i][j] for i in range(3, 6) for j in range(6, 9)]
-    if pos[0] > 5 and pos[1] < 3:
-        block = [grid[i][j] for i in range(6, 9) for j in range(3)]
-    if pos[0] > 5 and 2 < pos[1] < 6:
-        block = [grid[i][j] for i in range(6, 9) for j in range(3, 6)]
-    if pos[0] > 5 and pos[1] > 5:
-        block = [grid[i][j] for i in range(6, 9) for j in range(6, 9)]
+    block=[]
+    row = (pos[0] // 3)
+    col = (pos[1] // 3)
+    for i in range(3):
+        for j in range(3):
+            block.append(grid[row * 3 + i][col * 3 + j])
     return block
 
 
