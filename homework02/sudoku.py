@@ -171,8 +171,7 @@ def check_solution(solution: tp.List[tp.List[str]]) -> bool:
     # TODO: Add doctests with bad puzzles
     check = set('123456789')
     for i in range(9):
-        if set(get_row(solution, (i, 0))) != check or set(get_col(solution, (0, i))) != check or set(
-                get_block(solution, ((i // 3) * 2, (i % 3) * 3))) != check:
+        if set(get_row(solution, (i, 0))) != check or set(get_col(solution, (0, i))) != check or set(get_block(solution, ((i // 3) * 2, (i % 3) * 3))) != check:
             return False
     return True
 
