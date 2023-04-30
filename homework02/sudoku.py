@@ -1,6 +1,7 @@
 import pathlib
 import typing as tp
 import random
+
 T = tp.TypeVar("T")
 
 
@@ -58,8 +59,7 @@ def get_row(grid: tp.List[tp.List[str]], pos: tp.Tuple[int, int]) -> tp.List[str
     >>> get_row([['1', '2', '3'], ['4', '5', '6'], ['.', '8', '9']], (2, 0))
     ['.', '8', '9']
     """
-    row = grid[pos[0]].copy()
-    return row
+    return grid[pos[0]]
 
 
 def get_col(grid: tp.List[tp.List[str]], pos: tp.Tuple[int, int]) -> tp.List[str]:
@@ -162,10 +162,8 @@ def solve(grid: tp.List[tp.List[str]]) -> tp.Optional[tp.List[tp.List[str]]]:
         return grid
     for i in find_possible_values(grid, empty_position):
         grid[empty_position[0]][empty_position[1]] = i
-        solution = solve(grid)
-        if solution: return solution  # работает как break для for
-    grid[empty_position[0]][empty_position[1]] = '.'
-    return None
+        if solve(grid): return solve(grid)  # работает как break для for
+    else: grid[empty_position[0]][empty_position[1]] = '.'
 
 
 def check_solution(solution: tp.List[tp.List[str]]) -> bool:
@@ -173,7 +171,8 @@ def check_solution(solution: tp.List[tp.List[str]]) -> bool:
     # TODO: Add doctests with bad puzzles
     check = set('123456789')
     for i in range(9):
-        if set(get_row(solution, (i, 0))) != check or set(get_col(solution, (0, i))) != check or set(get_block(solution, ((i // 3) * 2, (i % 3) * 3))) != check:
+        if set(get_row(solution, (i, 0))) != check or set(get_col(solution, (0, i))) != check or set(
+                get_block(solution, ((i // 3) * 2, (i % 3) * 3))) != check:
             return False
     return True
 
@@ -200,14 +199,25 @@ def generate_sudoku(N: int) -> tp.List[tp.List[str]]:
     >>> check_solution(solution)
     True
     """
-    new_sudoku = [['.' for j in range(9)] for i in range(9)]
-    while N > 0:
-        i = random.randint(0,8)
-        j = random.randint(0,8)
-        value = str(random.randint(1,9))
-        if new_sudoku[i][j] == '.' and value not in set(get_row(new_sudoku, (i, j))) and value not in set(get_col(new_sudoku, (i, j))) and value not in set(get_block(new_sudoku, (i, j))):
-            new_sudoku[i][j] = value
-            N -= 1
+    new_sudoku = solve([['.' for j in range(9)] for i in range(9)])
+    for i in range(3):  # перестановка строк
+        first = random.randint(i * 3, i * 3 + 2)
+        second = random.randint(i * 3, i * 3 + 2)
+        row = new_sudoku[first]
+        new_sudoku[first] = new_sudoku[second]
+        new_sudoku[second] = row
+        first = random.randint(i * 3, i * 3 + 2)
+        second = random.randint(i * 3, i * 3 + 2)
+        for j in range(9):  # перестановка столбцов
+            col = new_sudoku[j][first]
+            new_sudoku[j][first] = new_sudoku[j][second]
+            new_sudoku[j][second] = col
+    while N < 81:
+        i = random.randint(0, 8)
+        j = random.randint(0, 8)
+        if new_sudoku[i][j] != '.':
+            new_sudoku[i][j] = '.'
+            N += 1
     return new_sudoku
 
 
