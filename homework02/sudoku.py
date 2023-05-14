@@ -162,7 +162,7 @@ def solve(grid: tp.List[tp.List[str]]) -> tp.Optional[tp.List[tp.List[str]]]:
         return grid
     for i in find_possible_values(grid, empty_position):
         grid[empty_position[0]][empty_position[1]] = i
-        if solve(grid): return solve(grid)  # работает как break для for
+        if solve(grid): return solve(grid)
     else: grid[empty_position[0]][empty_position[1]] = '.'
 
 
